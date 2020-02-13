@@ -21,7 +21,10 @@ module ActsAsTaggableOn
     ### SCOPES:
     scope :most_used, ->(limit = 20) { order('taggings_count desc').limit(limit) }
     scope :least_used, ->(limit = 20) { order('taggings_count asc').limit(limit) }
-
+    scope :skill_tags, -> { where(category: 'skill') }
+    scope :language_tags, -> { where(category: 'language') }
+    scope :enabled_skill_tags, -> { where(category: 'skill', enabled: true) }
+    scope :enabled_language_tags, -> { where(category: 'language', enabled: true) }
     def self.named(name)
       if ActsAsTaggableOn.strict_case_match
         where(["name = #{binary}?", as_8bit_ascii(name)])
