@@ -65,7 +65,7 @@ module ActsAsTaggableOn
       end
     end
 
-    def self.find_or_create_all_with_like_by_name(*list, category = nil)
+    def self.find_or_create_all_with_like_by_name(*list, category: nil)
       list = Array(list).flatten
 
       return [] if list.empty?
