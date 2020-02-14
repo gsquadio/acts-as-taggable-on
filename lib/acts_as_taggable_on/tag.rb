@@ -65,7 +65,7 @@ module ActsAsTaggableOn
       end
     end
 
-    def self.find_or_create_all_with_like_by_name(*list)
+    def self.find_or_create_all_with_like_by_name(*list, category = nil)
       list = Array(list).flatten
 
       return [] if list.empty?
@@ -76,7 +76,7 @@ module ActsAsTaggableOn
           tries ||= 3
           comparable_tag_name = comparable_name(tag_name)
           existing_tag = existing_tags.find { |tag| comparable_name(tag.name) == comparable_tag_name }
-          existing_tag || create(name: tag_name)
+          existing_tag || create(name: tag_name, category: category)
         rescue ActiveRecord::RecordNotUnique
           if (tries -= 1).positive?
             ActiveRecord::Base.connection.execute 'ROLLBACK'
@@ -86,6 +86,30 @@ module ActsAsTaggableOn
 
           raise DuplicateTagError.new("'#{tag_name}' has already been taken")
         end
+      end
+    end
+
+    def self.update_tag(tag_name, id)
+      tag = ActsAsTaggableOn::Tag.find_by(id: id)
+      if tag.present?
+        tag.name = tag_name
+        tag.save
+      end
+    end
+
+    def self.disable_tag(id)
+      tag = ActsAsTaggableOn::Tag.find_by(id: id)
+      if tag.present?
+        tag.enabled = false
+        tag.save
+      end
+    end
+
+    def self.enable_tag(id)
+      tag = ActsAsTaggableOn::Tag.find_by(id: id)
+      if tag.present?
+        tag.enabled = true
+        tag.save
       end
     end
 
