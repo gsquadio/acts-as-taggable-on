@@ -22,6 +22,7 @@ module ActsAsTaggableOn
     scope :most_used, ->(limit = 20) { order('taggings_count desc').limit(limit) }
     scope :least_used, ->(limit = 20) { order('taggings_count asc').limit(limit) }
     scope :with_categories, ->(categories , enabled = true) { where(category: categories, enabled: enabled) }
+
     def self.named(name)
       if ActsAsTaggableOn.strict_case_match
         where(["name = #{binary}?", as_8bit_ascii(name)])
@@ -89,7 +90,7 @@ module ActsAsTaggableOn
       end
     end
 
-    def self.update_tag(tag_name, id)
+    def self.update_name(tag_name, id)
       tag = ActsAsTaggableOn::Tag.find_by(id: id)
       if tag.present?
         tag.name = tag_name
@@ -97,7 +98,7 @@ module ActsAsTaggableOn
       end
     end
 
-    def self.disable_tag(id)
+    def self.disable(id)
       tag = ActsAsTaggableOn::Tag.find_by(id: id)
       if tag.present?
         tag.enabled = false
@@ -105,7 +106,7 @@ module ActsAsTaggableOn
       end
     end
 
-    def self.enable_tag(id)
+    def self.enable(id)
       tag = ActsAsTaggableOn::Tag.find_by(id: id)
       if tag.present?
         tag.enabled = true
