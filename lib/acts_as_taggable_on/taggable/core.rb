@@ -34,7 +34,7 @@ module ActsAsTaggableOn::Taggable
                      after_add: :dirtify_tag_list,
                      after_remove: :dirtify_tag_list
 
-            has_many context_tags, -> { order(taggings_order) },
+            has_many context_tags, -> { order(taggings_order).where(enabled: true) },
                      class_name: 'ActsAsTaggableOn::Tag',
                      through: context_taggings,
                      source: :tag
