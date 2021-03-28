@@ -47,6 +47,10 @@ module ActsAsTaggableOn::Taggable
               tag_list_on('#{tags_type}')
             end
 
+           def enabled_#{tag_type}_list
+              enabled_tag_list_on('#{tags_type}')
+            end
+
             def #{tag_type}_list=(new_tags)
               parsed_new_list = ActsAsTaggableOn.default_parser.new(new_tags).parse
 
