@@ -274,6 +274,9 @@ matched tags.
 @tom = User.find_by_name("Tom")
 @tom.skill_list # => ["hacking", "jogging", "diving"]
 
+# only enabled tags in the list
+@tom.enabled_skill_list # => ["only", "enabled", "skills"]
+
 @tom.find_related_skills # => [<User name="Bobby">, <User name="Frankie">]
 @bobby.find_related_skills # => [<User name="Tom">]
 @frankie.find_related_skills # => [<User name="Tom">]
@@ -292,6 +295,9 @@ to allow for dynamic tag contexts (this could be user generated tag contexts!)
 @user.tags_on(:customs) # => [<Tag name='same'>,...]
 @user.tag_counts_on(:customs)
 User.tagged_with("same", :on => :customs) # => [@user]
+
+# only enabled tags
+@user.enabled_tag_list_on(:customs) # => ["only", "enabled", "tags"]
 ```
 
 ### Tag Parsers
