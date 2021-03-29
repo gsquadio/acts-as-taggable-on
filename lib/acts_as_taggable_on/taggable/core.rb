@@ -47,6 +47,10 @@ module ActsAsTaggableOn::Taggable
               tag_list_on('#{tags_type}')
             end
 
+           def enabled_#{tag_type}_list
+              enabled_tag_list_on('#{tags_type}')
+            end
+
             def #{tag_type}_list=(new_tags)
               parsed_new_list = ActsAsTaggableOn.default_parser.new(new_tags).parse
 
@@ -162,9 +166,26 @@ module ActsAsTaggableOn::Taggable
       end
     end
 
+    def enabled_tag_list_cache_on(context)
+      variable_name = "@enabled_#{context.to_s.singularize}_list"
+      if instance_variable_get(variable_name)
+        instance_variable_get(variable_name)
+      elsif cached_tag_list_on(context) && ensure_included_cache_methods! && self.class.caching_tag_list_on?(context)
+        instance_variable_set(variable_name, ActsAsTaggableOn.default_parser.new(cached_tag_list_on(context)).parse)
+      else
+        instance_variable_set(variable_name, ActsAsTaggableOn::TagList.new(tags_on(context).where(enabled: true).map(&:name)))
+      end
+    end
+
+
     def tag_list_on(context)
       add_custom_context(context)
       tag_list_cache_on(context)
+    end
+
+    def enabled_tag_list_on(context)
+      add_custom_context(context)
+      enabled_tag_list_cache_on(context)
     end
 
     def all_tags_list_on(context)
