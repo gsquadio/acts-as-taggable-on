@@ -7,6 +7,10 @@ module ActsAsTaggableOn
 
     has_many :taggings, dependent: :destroy, class_name: '::ActsAsTaggableOn::Tagging'
 
+    ### CALLBACKS:
+
+    before_create :ensure_uuid
+
     ### VALIDATIONS:
 
     validates_presence_of :name
@@ -114,6 +118,18 @@ module ActsAsTaggableOn
       end
     end
 
+    def self.populate_uuids
+      missing_uuid_query = ActsAsTaggableOn::Tag.where(uuid: nil)
+      missing_uuid_count = missing_uuid_query.count
+
+      missing_uuid_query.each_with_index do |tag, i|
+        uuid = SecureRandom.uuid
+        tag.update(uuid: uuid)
+
+        p "(#{i + 1} / #{missing_uuid_count}) Tag '#{tag.name}': UUID is now #{uuid}!"
+      end
+    end
+
     ### INSTANCE METHODS:
 
     def ==(object)
@@ -126,6 +142,12 @@ module ActsAsTaggableOn
 
     def count
       read_attribute(:count).to_i
+    end
+
+    private
+
+    def ensure_uuid
+      self.uuid = SecureRandom.uuid if self.uuid.blank?
     end
 
     class << self
