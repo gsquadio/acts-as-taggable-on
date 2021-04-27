@@ -1,9 +1,9 @@
 if ActiveRecord.gem_version >= Gem::Version.new('5.0')
-  class AddCategoryToTags < ActiveRecord::Migration[4.2]; end
+  class AddUUIDToTags < ActiveRecord::Migration[4.2]; end
 else
-  class AddCategoryToTags < ActiveRecord::Migration; end
+  class AddUUIDToTags < ActiveRecord::Migration; end
 end
-AddCategoryToTags.class_eval do
+AddUUIDToTags.class_eval do
   def self.up
     add_column ActsAsTaggableOn.tags_table, :uuid, :uuid
 
