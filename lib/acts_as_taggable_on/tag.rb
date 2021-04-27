@@ -119,14 +119,14 @@ module ActsAsTaggableOn
     end
 
     def self.populate_uuids
-      ActsAsTaggableOn::Tag.all.each do |tag|
-        if tag.uuid.present?
-          p "Tag '#{tag.name}': UUID already exists... Skipping!"
-        else
-          uuid = SecureRandom.uuid
-          tag.update(uuid: SecureRandom.uuid)
-          p "Tag '#{tag.name}': UUID is now #{uuid}!"
-        end
+      missing_uuid_query = ActsAsTaggableOn::Tag.where(uuid: nil)
+      missing_uuid_count = missing_uuid_query.count
+
+      missing_uuid_query.each_with_index do |tag, i|
+        uuid = SecureRandom.uuid
+        tag.update(uuid: uuid)
+
+        p "(#{i + 1} / #{missing_uuid_count}) Tag '#{tag.name}': UUID is now #{uuid}!"
       end
     end
 
