@@ -13,7 +13,7 @@ module ActsAsTaggableOn
 
     ### VALIDATIONS:
 
-    validates_presence_of :name
+    validates_presence_of :name, :category
     validates_uniqueness_of :name, if: :validates_name_uniqueness?, case_sensitive: true
     validates_length_of :name, maximum: 255
 
